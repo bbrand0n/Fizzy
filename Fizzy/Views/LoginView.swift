@@ -10,36 +10,35 @@ import FirebaseAuth
 
 struct LoginView: View {
     @Binding var isLoggedIn: Bool
-    @State private var errorMessage: String?
+    @State private var isLoggingIn = false
     
     var body: some View {
         VStack {
-            Text("Party Card Game")
+            Text("Fizzy Party Game")
                 .font(.largeTitle)
                 .padding()
             
-            Button("Start Game (Anonymous Login)") {
-                Auth.auth().signInAnonymously { authResult, error in
-                    if let error = error {
-                        errorMessage = error.localizedDescription
-                    } else {
-                        isLoggedIn = true
-                    }
+            Button("Start (Anonymous Login)") {
+                Task {
+                    isLoggingIn = true
+                    await FirebaseService.shared.signInAnonymously()
+                    isLoggedIn = FirebaseService.shared.user != nil
+                    isLoggingIn = false
                 }
             }
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
             .cornerRadius(10)
+            .disabled(isLoggingIn)
             
-            if let error = errorMessage {
-                Text(error).foregroundColor(.red)
+            if isLoggingIn {
+                ProgressView()
             }
         }
     }
 }
 
 #Preview {
-    @Previewable @State var isLoggedIn = false
-    LoginView(isLoggedIn: $isLoggedIn)
+    LoginView(isLoggedIn: .constant(false))
 }

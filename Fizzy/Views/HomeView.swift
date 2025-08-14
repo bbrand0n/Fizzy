@@ -9,9 +9,7 @@ import SwiftUI
 import FirebaseFirestore
 
 struct HomeView: View {
-    @State private var playerNames: [String] = ["Player 1"]
-    @State private var gameSessionID: String?
-    @State private var showGame = false
+    @StateObject private var viewModel = HomeViewModel()
     
     var body: some View {
         NavigationStack {
@@ -20,50 +18,35 @@ struct HomeView: View {
                     .font(.title)
                 
                 List {
-                    ForEach(playerNames.indices, id: \.self) { index in
-                        TextField("Player Name", text: $playerNames[index])
+                    ForEach(viewModel.playerNames.indices, id: \.self) { index in
+                        TextField("Player Name", text: $viewModel.playerNames[index])
                     }
-                    .onDelete { indices in
-                        playerNames.remove(atOffsets: indices)
-                    }
+                    .onDelete(perform: viewModel.removePlayer)
                     
                     Button("Add Player") {
-                        playerNames.append("Player \(playerNames.count + 1)")
+                        viewModel.addPlayer()
                     }
                 }
                 
                 Button("Start Game") {
-                    createGameSession()
+                    Task {
+                        await viewModel.startGame()
+                    }
                 }
                 .padding()
                 .background(Color.green)
                 .foregroundColor(.white)
                 .cornerRadius(10)
-            }
-            .navigationDestination(isPresented: $showGame) {
-                if let id = gameSessionID {
-                    GameView(gameID: id, players: playerNames)
+                .disabled(viewModel.isStartingGame)
+                
+                if viewModel.isStartingGame {
+                    ProgressView()
                 }
             }
-        }
-    }
-    
-    private func createGameSession() {
-        let db = Firestore.firestore()
-        let sessionData: [String: Any] = [
-            "players": playerNames,
-            "currentTurn": 0,
-            "prompts": [],
-            "scores": Array(repeating: 0, count: playerNames.count)
-        ]
-        
-        var ref: DocumentReference? = nil
-        ref = db.collection("games").addDocument(data: sessionData) { error in
-            if let error = error {
-                print("Error creating session: \(error)")
-            } else {
-                gameSessionID = ref?.documentID
-                showGame = true
+            .navigationDestination(isPresented: Binding(get: { viewModel.gameSessionID != nil }, set: { _ in })) {
+                if let id = viewModel.gameSessionID {
+                    GameView(gameID: id)
+                }
             }
         }
     }
