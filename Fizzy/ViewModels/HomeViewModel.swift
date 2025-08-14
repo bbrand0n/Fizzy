@@ -25,6 +25,8 @@ class HomeViewModel: ObservableObject {
     }
     
     func startGame() async {
+        playerNames = playerNames.filter { !$0.isEmpty }  // Validate: remove empty names
+        if playerNames.isEmpty { return }
         isStartingGame = true
         gameSessionID = await firebaseService.createGameSession(players: playerNames)
         isStartingGame = false

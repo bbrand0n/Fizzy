@@ -11,6 +11,7 @@ import FirebaseFirestore
 class GameViewModel: ObservableObject {
     @Published var session: GameSession?
     @Published var prompt: String = "Loading prompt..."
+    @Published var isLoadingPrompt = false
     @Published var error: Error?
     
     private var listener: ListenerRegistration?
@@ -34,9 +35,11 @@ class GameViewModel: ObservableObject {
     }
     
     func generateNewPrompt() async {
-        prompt = await aiService.generatePrompt(context: "Party game for \(session?.players.count ?? 0) players")
-        guard let id = session?.id else { return }
-        await firebaseService.updateGameSession(id: id, data: ["prompts": FieldValue.arrayUnion([prompt])])
+        guard let session = session else { return }
+        isLoadingPrompt = true
+        prompt = await aiService.generatePrompt(context: "Party game for \(session.players.count) players")
+        await firebaseService.updateGameSession(id: session.id, data: ["prompts": FieldValue.arrayUnion([prompt])])
+        isLoadingPrompt = false
     }
     
     func acceptPenalty() async {
@@ -55,5 +58,4 @@ class GameViewModel: ObservableObject {
     
     deinit {
         listener?.remove()
-    }
-}
+    }}

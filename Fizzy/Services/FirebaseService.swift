@@ -6,16 +6,25 @@
 //
 
 import Foundation
+import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
+import GoogleSignIn
 
 class FirebaseService: ObservableObject {
     static let shared = FirebaseService()
+    private let db = Firestore.firestore()
     
     @Published var user: User?
-    @Published var error: Error?
-    
-    private let db = Firestore.firestore()
+    @Published var error: Error? {
+        didSet {
+            if error != nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    self.error = nil  // Auto-reset after display
+                }
+            }
+        }
+    }
     
     func signInAnonymously() async {
         do {
@@ -26,9 +35,31 @@ class FirebaseService: ObservableObject {
         }
     }
     
+    func signInWithGoogle(presentingViewController: UIViewController) async -> Bool {
+        guard let clientID = FirebaseApp.app()?.options.clientID else { return false }
+        
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+        
+        do {
+            let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: presentingViewController)
+            let idToken = result.user.idToken?.tokenString
+            let accessToken = result.user.accessToken.tokenString
+            
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken ?? "", accessToken: accessToken)
+            
+            let authResult = try await Auth.auth().signIn(with: credential)
+            user = authResult.user
+            return true
+        } catch {
+            self.error = error
+            return false
+        }
+    }
+    
     func createGameSession(players: [String]) async -> String? {
         let session = GameSession(
-            id: "",  // Will be set by Firestore
+            id: "",
             players: players,
             currentTurn: 0,
             prompts: [],

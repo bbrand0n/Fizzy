@@ -20,9 +20,22 @@
 		CF0CD26D2E4E783100AFF1C3 /* Fizzy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fizzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CF0CD2D92E4E864700AFF1C3 /* Exceptions for "Fizzy" folder in "Fizzy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CF0CD26C2E4E783100AFF1C3 /* Fizzy */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CF0CD26F2E4E783100AFF1C3 /* Fizzy */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CF0CD2D92E4E864700AFF1C3 /* Exceptions for "Fizzy" folder in "Fizzy" target */,
+			);
 			path = Fizzy;
 			sourceTree = "<group>";
 		};
@@ -284,6 +297,7 @@
 				DEVELOPMENT_TEAM = AW3Y2MZVMF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Fizzy/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,6 +326,7 @@
 				DEVELOPMENT_TEAM = AW3Y2MZVMF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Fizzy/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

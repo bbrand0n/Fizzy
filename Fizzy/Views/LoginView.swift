@@ -32,6 +32,19 @@ struct LoginView: View {
             .cornerRadius(10)
             .disabled(isLoggingIn)
             
+            Button("Sign in with Google") {
+                Task {
+                    guard let presentingVC = UIApplication.shared.windows.first?.rootViewController else { return }
+                    _ = await FirebaseService.shared.signInWithGoogle(presentingViewController: presentingVC)
+                    isLoggedIn = FirebaseService.shared.user != nil
+                }
+            }
+            .padding()
+            .background(Color.white)
+            .foregroundColor(.black)
+            .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray))
+            
             if isLoggingIn {
                 ProgressView()
             }
