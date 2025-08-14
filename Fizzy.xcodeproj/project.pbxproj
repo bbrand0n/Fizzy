@@ -1,0 +1,414 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CF0CD2A92E4E78B200AFF1C3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CF0CD2A82E4E78B200AFF1C3 /* FirebaseAuth */; };
+		CF0CD2AB2E4E78B200AFF1C3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CF0CD2AA2E4E78B200AFF1C3 /* FirebaseCore */; };
+		CF0CD2AD2E4E78B200AFF1C3 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CF0CD2AC2E4E78B200AFF1C3 /* FirebaseDatabase */; };
+		CF0CD2AF2E4E78B200AFF1C3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CF0CD2AE2E4E78B200AFF1C3 /* FirebaseFirestore */; };
+		CF0CD2B12E4E78B200AFF1C3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = CF0CD2B02E4E78B200AFF1C3 /* FirebaseStorage */; };
+		CF0CD2B42E4E78E900AFF1C3 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = CF0CD2B32E4E78E900AFF1C3 /* GoogleSignIn */; };
+		CF0CD2B62E4E78E900AFF1C3 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CF0CD2B52E4E78E900AFF1C3 /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CF0CD26D2E4E783100AFF1C3 /* Fizzy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fizzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CF0CD26F2E4E783100AFF1C3 /* Fizzy */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Fizzy;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CF0CD26A2E4E783100AFF1C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF0CD2AD2E4E78B200AFF1C3 /* FirebaseDatabase in Frameworks */,
+				CF0CD2AF2E4E78B200AFF1C3 /* FirebaseFirestore in Frameworks */,
+				CF0CD2B62E4E78E900AFF1C3 /* GoogleSignInSwift in Frameworks */,
+				CF0CD2AB2E4E78B200AFF1C3 /* FirebaseCore in Frameworks */,
+				CF0CD2B12E4E78B200AFF1C3 /* FirebaseStorage in Frameworks */,
+				CF0CD2A92E4E78B200AFF1C3 /* FirebaseAuth in Frameworks */,
+				CF0CD2B42E4E78E900AFF1C3 /* GoogleSignIn in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CF0CD2642E4E783100AFF1C3 = {
+			isa = PBXGroup;
+			children = (
+				CF0CD26F2E4E783100AFF1C3 /* Fizzy */,
+				CF0CD26E2E4E783100AFF1C3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CF0CD26E2E4E783100AFF1C3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CF0CD26D2E4E783100AFF1C3 /* Fizzy.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CF0CD26C2E4E783100AFF1C3 /* Fizzy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF0CD2782E4E783200AFF1C3 /* Build configuration list for PBXNativeTarget "Fizzy" */;
+			buildPhases = (
+				CF0CD2692E4E783100AFF1C3 /* Sources */,
+				CF0CD26A2E4E783100AFF1C3 /* Frameworks */,
+				CF0CD26B2E4E783100AFF1C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CF0CD26F2E4E783100AFF1C3 /* Fizzy */,
+			);
+			name = Fizzy;
+			packageProductDependencies = (
+				CF0CD2A82E4E78B200AFF1C3 /* FirebaseAuth */,
+				CF0CD2AA2E4E78B200AFF1C3 /* FirebaseCore */,
+				CF0CD2AC2E4E78B200AFF1C3 /* FirebaseDatabase */,
+				CF0CD2AE2E4E78B200AFF1C3 /* FirebaseFirestore */,
+				CF0CD2B02E4E78B200AFF1C3 /* FirebaseStorage */,
+				CF0CD2B32E4E78E900AFF1C3 /* GoogleSignIn */,
+				CF0CD2B52E4E78E900AFF1C3 /* GoogleSignInSwift */,
+			);
+			productName = Fizzy;
+			productReference = CF0CD26D2E4E783100AFF1C3 /* Fizzy.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CF0CD2652E4E783100AFF1C3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					CF0CD26C2E4E783100AFF1C3 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+				};
+			};
+			buildConfigurationList = CF0CD2682E4E783100AFF1C3 /* Build configuration list for PBXProject "Fizzy" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CF0CD2642E4E783100AFF1C3;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CF0CD2A72E4E78B200AFF1C3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				CF0CD2B22E4E78E900AFF1C3 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CF0CD26E2E4E783100AFF1C3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CF0CD26C2E4E783100AFF1C3 /* Fizzy */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CF0CD26B2E4E783100AFF1C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CF0CD2692E4E783100AFF1C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CF0CD2762E4E783200AFF1C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = AW3Y2MZVMF;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CF0CD2772E4E783200AFF1C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = AW3Y2MZVMF;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CF0CD2792E4E783200AFF1C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AW3Y2MZVMF;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.code-nova.Fizzy";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CF0CD27A2E4E783200AFF1C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AW3Y2MZVMF;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.code-nova.Fizzy";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CF0CD2682E4E783100AFF1C3 /* Build configuration list for PBXProject "Fizzy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF0CD2762E4E783200AFF1C3 /* Debug */,
+				CF0CD2772E4E783200AFF1C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF0CD2782E4E783200AFF1C3 /* Build configuration list for PBXNativeTarget "Fizzy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF0CD2792E4E783200AFF1C3 /* Debug */,
+				CF0CD27A2E4E783200AFF1C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CF0CD2A72E4E78B200AFF1C3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.1.0;
+			};
+		};
+		CF0CD2B22E4E78E900AFF1C3 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CF0CD2A82E4E78B200AFF1C3 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF0CD2A72E4E78B200AFF1C3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		CF0CD2AA2E4E78B200AFF1C3 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF0CD2A72E4E78B200AFF1C3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		CF0CD2AC2E4E78B200AFF1C3 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF0CD2A72E4E78B200AFF1C3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		CF0CD2AE2E4E78B200AFF1C3 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF0CD2A72E4E78B200AFF1C3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		CF0CD2B02E4E78B200AFF1C3 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF0CD2A72E4E78B200AFF1C3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		CF0CD2B32E4E78E900AFF1C3 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF0CD2B22E4E78E900AFF1C3 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		CF0CD2B52E4E78E900AFF1C3 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF0CD2B22E4E78E900AFF1C3 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = CF0CD2652E4E783100AFF1C3 /* Project object */;
+}
