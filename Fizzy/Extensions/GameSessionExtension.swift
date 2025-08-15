@@ -11,9 +11,9 @@ extension GameSession {
     func asDictionary() -> [String: Any] {
         [
             "players": players,
-            "currentTurn": currentTurn,
             "prompts": prompts,
-            "scores": scores
+            "scores": scores,
+            "settings": settings?.asDictionary() ?? [:]
         ]
     }
     
@@ -21,9 +21,9 @@ extension GameSession {
         GameSession(
             id: id,
             players: data["players"] as? [String] ?? [],
-            currentTurn: data["currentTurn"] as? Int ?? 0,
             prompts: data["prompts"] as? [String] ?? [],
-            scores: data["scores"] as? [Int] ?? []
+            scores: data["scores"] as? [Int] ?? [],
+            settings: GameSettings.fromDictionary(data: data["settings"] as? [String: Any] ?? [:])
         )
     }
 }

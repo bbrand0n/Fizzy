@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class HomeViewModel: ObservableObject {
     @Published var playerNames: [String] = ["Player 1"]
     @Published var gameSessionID: String?

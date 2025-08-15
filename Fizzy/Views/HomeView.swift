@@ -45,7 +45,7 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: Binding(get: { viewModel.gameSessionID != nil }, set: { _ in })) {
                 if let id = viewModel.gameSessionID {
-                    GameView(gameID: id)
+                    GameSetupView(gameID: id)
                 }
             }
         }

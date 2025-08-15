@@ -10,7 +10,7 @@ import Foundation
 struct GameSession: Identifiable, Codable {
     let id: String
     var players: [String]
-    var currentTurn: Int
     var prompts: [String]
     var scores: [Int]
+    var settings: GameSettings?
 }

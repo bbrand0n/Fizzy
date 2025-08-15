@@ -26,6 +26,13 @@ class FirebaseService: ObservableObject {
         }
     }
     
+    private init() {
+        if let currentUser = Auth.auth().currentUser {
+            self.user = currentUser
+        }
+    }
+    
+    @MainActor
     func signInAnonymously() async {
         do {
             let result = try await Auth.auth().signInAnonymously()
@@ -35,6 +42,7 @@ class FirebaseService: ObservableObject {
         }
     }
     
+    @MainActor
     func signInWithGoogle(presentingViewController: UIViewController) async -> Bool {
         guard let clientID = FirebaseApp.app()?.options.clientID else { return false }
         
@@ -57,11 +65,11 @@ class FirebaseService: ObservableObject {
         }
     }
     
+    @MainActor
     func createGameSession(players: [String]) async -> String? {
         let session = GameSession(
             id: "",
             players: players,
-            currentTurn: 0,
             prompts: [],
             scores: Array(repeating: 0, count: players.count)
         )
@@ -75,17 +83,23 @@ class FirebaseService: ObservableObject {
         }
     }
     
+    @MainActor
     func observeGameSession(id: String, completion: @escaping (GameSession?, Error?) -> Void) -> ListenerRegistration {
         return db.collection("games").document(id).addSnapshotListener { snapshot, error in
             guard let data = snapshot?.data() else {
-                completion(nil, error)
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
                 return
             }
             let session = GameSession.fromDictionary(id: id, data: data)
-            completion(session, nil)
+            DispatchQueue.main.async {
+                completion(session, nil)
+            }
         }
     }
     
+    @MainActor
     func updateGameSession(id: String, data: [String: Any]) async {
         do {
             try await db.collection("games").document(id).updateData(data)
