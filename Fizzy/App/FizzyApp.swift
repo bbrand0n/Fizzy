@@ -11,6 +11,12 @@ import FirebaseAuth
 import GoogleSignIn
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+    static var orientationMask: UIInterfaceOrientationMask = .portrait  // Default to portrait
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return AppDelegate.orientationMask
+    }
+    
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()

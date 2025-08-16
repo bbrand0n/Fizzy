@@ -9,9 +9,14 @@ import Foundation
 import SwiftUICore
 
 enum Constants {
-    static let primaryColor = Color.blue
-    static let accentColor = Color.green
-    static let penaltyColor = Color.red
-    static let passColor = Color.gray
-    static let promptBackground = Color.yellow
+    static let primaryColor = Color("Primary")
+    static let accentColor = Color("Accent")
+    static let backgroundColor = Color("Background")
+    static let secondaryColor = Color("Secondary")
+    static let textPrimaryColor = Color("TextPrimary")
+    static let textSecondaryColor = Color("TextSecondary")
+    
+    static let penaltyColor = Color("Accent")
+    static let passColor = Color("Secondary")
+    static let promptBackground = Color("Primary")
 }

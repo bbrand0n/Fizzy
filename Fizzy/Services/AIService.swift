@@ -8,8 +8,14 @@
 import Foundation
 
 class AIService {
-    private let apiKey = ""
     private let baseURL = "https://api.x.ai/v1"
+    private var apiKey: String {
+        if let key = Bundle.main.infoDictionary?["GrokAPIKey"] as? String {
+            return key
+        } else {
+            return ""
+        }
+    }
     
     func generatePrompt(history: [[String: String]]) async -> String {
         let url = URL(string: "\(baseURL)/chat/completions")!
@@ -32,12 +38,12 @@ class AIService {
             
             // Enhanced logging: Print status and raw JSON
             if let httpResponse = response as? HTTPURLResponse {
-                print("API Status Code: \(httpResponse.statusCode)")
+//                print("API Status Code: \(httpResponse.statusCode)")
             }
             if let rawString = String(data: data, encoding: .utf8) {
-                print("Raw API Response: \(rawString)")
+//                print("Raw API Response: \(rawString)")
             } else {
-                print("Raw data not convertible to string.")
+//                print("Raw data not convertible to string.")
             }
             
             let decoded = try JSONDecoder().decode(GrokResponse.self, from: data)

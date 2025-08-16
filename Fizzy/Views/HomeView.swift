@@ -48,6 +48,9 @@ struct HomeView: View {
                     GameSetupView(gameID: id)
                 }
             }
+            .onAppear {
+                UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            }
         }
     }
 }
