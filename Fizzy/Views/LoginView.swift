@@ -10,27 +10,14 @@ import FirebaseAuth
 
 struct LoginView: View {
     @Binding var isLoggedIn: Bool
+    @ObservedObject var firebaseService = FirebaseService.shared
     @State private var isLoggingIn = false
     
     var body: some View {
-        VStack {
+        VStack(spacing: 24) {
             Text("Fizzy Party Game")
                 .font(.largeTitle)
-                .padding()
-            
-            Button("Start (Anonymous Login)") {
-                Task {
-                    isLoggingIn = true
-                    await FirebaseService.shared.signInAnonymously()
-                    isLoggedIn = FirebaseService.shared.user != nil
-                    isLoggingIn = false
-                }
-            }
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .disabled(isLoggingIn)
+                .foregroundColor(Constants.textPrimary)
             
             Button("Sign in with Google") {
                 Task {
@@ -39,16 +26,37 @@ struct LoginView: View {
                     isLoggedIn = FirebaseService.shared.user != nil
                 }
             }
+            .font(.headline)
             .padding()
-            .background(Color.white)
-            .foregroundColor(.black)
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray))
+            .background(Constants.primaryColor)
+            .foregroundColor(.white)
+            .cornerRadius(Constants.cornerRadius)
+            .shadow(color: Constants.shadowColor, radius: 4)
+            .disabled(isLoggingIn)
+            .disabled(isLoggingIn)
+            
+            Button("Start (Anonymous Login)") {
+                Task {
+                    isLoggingIn = true
+                    await firebaseService.signInAnonymously()
+                    isLoggedIn = firebaseService.user != nil
+                    isLoggingIn = false
+                }
+            }
+            .font(.headline)
+            .padding()
+            .background(Constants.accentColor)
+            .foregroundColor(.white)
+            .cornerRadius(Constants.cornerRadius)
+            .shadow(color: Constants.shadowColor, radius: 4)
+            .disabled(isLoggingIn)
             
             if isLoggingIn {
-                ProgressView()
+                ProgressView().tint(Constants.primaryColor)
             }
         }
+        .padding()
+        .background(Constants.background)
     }
 }
 

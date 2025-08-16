@@ -9,14 +9,19 @@ import Foundation
 
 extension GameSettings {
     func asDictionary() -> [String: Any] {
-        ["explicitness": explicitness, "playerDetails": playerDetails, "theme": theme]
+        ["explicitness": explicitness,
+         "playerDetails": playerDetails,
+         "theme": theme,
+         "customInstructions": customInstructions
+        ]
     }
     
     static func fromDictionary(data: [String: Any]) -> GameSettings {
         GameSettings(
             explicitness: data["explicitness"] as? Int ?? 1,
             playerDetails: data["playerDetails"] as? String ?? "",
-            theme: data["theme"] as? String ?? "General"
+            theme: data["theme"] as? String ?? "General",
+            customInstructions: data["customInstructions"] as? String ?? ""
         )
     }
 }

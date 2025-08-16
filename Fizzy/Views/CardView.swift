@@ -11,20 +11,22 @@ struct CardView: View {
     let prompt: String
     
     var body: some View {
-        VStack {
-            Text(prompt)
-                .font(.headline)
-                .foregroundStyle(Constants.textPrimaryColor)
-                .multilineTextAlignment(.center)
-                .padding()
-        }
-        .frame(maxWidth: .infinity, minHeight: 200)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(LinearGradient(gradient: Gradient(colors: [Constants.primaryColor, Constants.primaryColor.opacity(0.5)]), startPoint: .top, endPoint: .bottom))
-                .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
-        )
-        .padding()
+        Text(prompt)
+            .font(.system(.title2, design: .rounded))
+            .foregroundColor(Constants.textPrimary)
+            .multilineTextAlignment(.center)
+            .padding(24)
+            .frame(maxWidth: .infinity, minHeight: 200)
+            .background(
+                Constants.cardBackground
+                    .overlay(Constants.promptBackground)  // Blend with existing yellow for subtle tint
+            )
+            .cornerRadius(Constants.cornerRadius)
+            .overlay(
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .stroke(Constants.borderColor, lineWidth: 1)
+            )
+            .shadow(color: Constants.shadowColor, radius: 8)
     }
 }
 
