@@ -11,6 +11,7 @@ import FirebaseFirestore
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var newPlayerName: String = ""
+    @State private var showLogoutConfirmation = false
     
     var body: some View {
         NavigationStack {
@@ -19,80 +20,87 @@ struct HomeView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                    .blur(radius: 4)
-                    .opacity(0.2)
+                    .blur(radius: Constants.shadowRadius)
+                    .opacity(Constants.backgroundOpacity)
                 
-                VStack(spacing: 32) {
+                VStack(spacing: Constants.smallSpacing) {
+                    
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 60))
+                        .foregroundColor(Constants.primaryColor)
+                        .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius / 2)
+                    
                     Text("Setup Your Game")
-                        .font(.system(.title, design: .rounded, weight: .semibold))
+                        .font(Constants.titleFont)
                         .foregroundColor(Constants.textPrimary)
-                        .padding(.top, 60)
+                        .padding(.top)
                     
                     Spacer()
                     
                     if !viewModel.playerNames.isEmpty {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 100, maximum: 250), spacing: 8, alignment: .center), count: 3), alignment: .center, spacing: 8) {  // Grid with up to 3 columns, wraps vertically
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 100, maximum: 400), spacing: Constants.smallSpacing, alignment: .center), count: 2), alignment: .center, spacing: Constants.smallSpacing){
                             ForEach(viewModel.playerNames.indices, id: \.self) { index in
                                 PlayerBubble(name: viewModel.playerNames[index]) {
                                     viewModel.playerNames.remove(at: index)
                                 }
                                 .transition(.scale.combined(with: .opacity))
-                                .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.playerNames)
+                                .animation(.spring(response: Constants.animationDuration, dampingFraction: 0.8), value: viewModel.playerNames)
                             }
                         }
-                        .padding(.horizontal, 35)
+                        .padding(.horizontal, Constants.mediumSpacing * 2)
+                        .padding(.bottom)
                     }
                     
                     ZStack(alignment: .trailing) {
                         TextField("Type to add members...", text: $newPlayerName)
-                            .font(.system(.body, design: .rounded))
+                            .font(Constants.bodyFont)
                             .textFieldStyle(.plain)
-                            .padding(12)
-                            .background(Color.white.opacity(0.9))
+                            .padding(Constants.mediumSpacing)
+                            .background(Constants.cardBackground) 
                             .cornerRadius(Constants.cornerRadius)
-                            .shadow(color: Constants.shadowColor, radius: 4)
+                            .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
                             .frame(maxWidth: .infinity)
-                            .padding(.horizontal, 40)
+                            .padding(.horizontal, Constants.mediumSpacing * 2)
                             .onSubmit {
                                 addPlayer()
                             }
-                        
+                            .foregroundColor(Constants.textPrimary)
                         Button(action: {
                             addPlayer()
                         }) {
                             Image(systemName: "plus")
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(Constants.primaryColor)
-                                .padding(8)
+                                .padding(Constants.smallSpacing)
                         }
-                        .padding(.trailing, 60)
+                        .padding(.trailing, Constants.mediumSpacing * 3)
                         .disabled(newPlayerName.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                     
                     Spacer()
                     
-                    Button("Customize Game", systemImage: "arrow.right") {
-                        Task { await viewModel.startGame() }
-                    }
-                    .font(.system(.headline, design: .rounded))
-                    .padding()
-                    .background(Constants.accentColor.opacity(0.9))
-                    .foregroundColor(.white)
-                    .cornerRadius(Constants.cornerRadius)
-                    .shadow(color: Constants.shadowColor, radius: 6)
-                    .disabled(viewModel.isStartingGame || viewModel.playerNames.allSatisfy { $0.isEmpty })
-                    .frame(maxWidth: .infinity) // Full width
-                    .padding(.horizontal, 40)   // Match text field
-                    
-                    if viewModel.isStartingGame {
+                    if !viewModel.isStartingGame {
+                        Button("Customize Game", systemImage: "arrow.right") {
+                            Task { await viewModel.startGame() }
+                        }
+                        .font(.system(.headline, design: .rounded))
+                        .padding(Constants.mediumSpacing)
+                        .background(Constants.accentColor.opacity(Constants.buttonOpacity))
+                        .foregroundColor(Color.white)
+                        .cornerRadius(Constants.cornerRadius)
+                        .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius + 2)
+                        .disabled(viewModel.isStartingGame || viewModel.playerNames.allSatisfy { $0.isEmpty })
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, Constants.mediumSpacing * 2)
+                    } else {
                         ProgressView()
                             .tint(Constants.primaryColor)
                             .scaleEffect(1.2)
                     }
                 }
-                .padding(.vertical, 20)     // Vertical padding for overall balance
-                .padding(.horizontal, 40)   // Safe area insets
-                .padding(.bottom, 20)       // Extra bottom for keyboard/button
+                .padding(.vertical, Constants.mediumSpacing)
+                .padding(.horizontal, Constants.horizontalLargeSpacing)
+                .padding(.bottom, Constants.mediumSpacing)
                 .ignoresSafeArea(.keyboard)
             }
             .navigationDestination(isPresented: Binding(get: { viewModel.gameSessionID != nil }, set: { _ in })) {
@@ -100,12 +108,27 @@ struct HomeView: View {
                     GameSetupView(gameID: id)
                 }
             }
+            .background(Constants.background)
+            .toolbar {  // Add toolbar for top placement
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("", systemImage: "iphone.and.arrow.right.outward") {
+                        showLogoutConfirmation = true
+                    }
+                    .foregroundColor(Constants.penaltyColor)  // Red tint for logout
+                }
+            }
+            .confirmationDialog("Are you sure you want to log out?", isPresented: $showLogoutConfirmation, titleVisibility: .visible) {
+                Button("Yes", role: .destructive) {
+                    FirebaseService.shared.signOut()
+                }
+                Button("No", role: .cancel) {}
+            }
         }
     }
     
     private func addPlayer() {
         let trimmedName = newPlayerName.trimmingCharacters(in: .whitespaces)
-        if !trimmedName.isEmpty && viewModel.playerNames.count < 10 {
+        if !trimmedName.isEmpty && viewModel.playerNames.count < Constants.maxPlayers {
             viewModel.playerNames.append(trimmedName)
             newPlayerName = ""
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -116,27 +139,26 @@ struct HomeView: View {
 struct PlayerBubble: View {
     let name: String
     let onRemove: () -> Void
-    
     var body: some View {
-        HStack(spacing: 8) {  // Increased spacing for readability
+        HStack(spacing: Constants.smallSpacing) {
             Text(name)
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundColor(.white)
+                .font(Constants.subheadlineFont)
+                .foregroundColor(Constants.textPrimary)
             
             Button(action: onRemove) {
                 Image(systemName: "xmark")
                     .font(.caption)
-                    .foregroundColor(.white)
+                    .foregroundColor(Constants.textSecondary)
                     .padding(2)
                     .clipShape(Circle())
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(Constants.primaryColor.opacity(0.9))
-        .cornerRadius(24)  // Softer corners
-        .shadow(color: Constants.shadowColor, radius: 5)
+        .padding(.horizontal, Constants.mediumSpacing)
+        .padding(.vertical, Constants.smallSpacing * 1.25)
+        .background(Constants.primaryColor.opacity(0.8))
+        .cornerRadius(Constants.cornerRadius * 1.5)
+        .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius + 1)
     }
 }
 

@@ -25,11 +25,11 @@ struct GameView: View {
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-                .blur(radius: 4)
-                .opacity(0.2)
+                .blur(radius: Constants.shadowRadius)
+                .opacity(Constants.backgroundOpacity)
             
             if let session = viewModel.session {
-                VStack(spacing: 24) {
+                VStack(spacing: Constants.largeSpacing) {
                     if viewModel.isLoadingPrompt {
                         ProgressView("Generating Prompt...")
                             .progressViewStyle(.circular)
@@ -38,14 +38,15 @@ struct GameView: View {
                     } else {
                         CardView(prompt: viewModel.prompt)
                             .transition(.opacity.combined(with: .scale(scale: 0.95)))
-                            .animation(.easeInOut(duration: 0.5), value: viewModel.prompt)
+                            .animation(.easeInOut(duration: Constants.animationDuration), value: viewModel.prompt)
                             .onTapGesture {
                                 Task { await viewModel.generateNewPrompt() }
                             }
-                            .padding(.horizontal, 70)
+                            .padding(.horizontal, Constants.mediumSpacing * 4)
+                            .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
                     }
                 }
-                .padding()
+                .padding(Constants.mediumSpacing)
                 
                 // Error alert
                 .alert("Error", isPresented: Binding(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
@@ -56,7 +57,7 @@ struct GameView: View {
                 
                 // Popup menu sheet
                 .sheet(isPresented: $showEditMenu) {
-                    EditPlayersMenu(viewModel: viewModel)
+                    GameSettingsMenu(viewModel: viewModel)
                         .presentationDetents([.height(0.80 * UIScreen.main.bounds.height)])
                         .presentationDragIndicator(.visible)
                 }
@@ -65,171 +66,187 @@ struct GameView: View {
                     .tint(Constants.primaryColor)
             }
         }
+        .background(Constants.background)
         .overlay(alignment: .bottomTrailing) {
             Button(action: {
                 showEditMenu = true
             }) {
                 HStack {
                     Text("Game Settings")
-                        .font(.system(.body, design: .rounded))
+                        .font(Constants.bodyFont)
                     
                     Image(systemName: "gearshape")
                 }
+                .foregroundColor(Constants.textPrimary)
+                .padding(Constants.mediumSpacing)
+                .background(Constants.cardBackground)
+                .cornerRadius(Constants.cornerRadius)
+                .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
             }
-            .padding(.bottom, 20)
-            .padding(.horizontal, 80)
+            .padding(.bottom, Constants.mediumSpacing)
+            .padding(.trailing, Constants.horizontalLargeSpacing + 20)
+        }
+        .onAppear {
+            Task { await viewModel.generateNewPrompt() }
         }
     }
 }
 
-struct EditPlayersMenu: View {
+struct GameSettingsMenu: View {
     @ObservedObject var viewModel: GameViewModel
     @State private var newPlayerName: String = ""
     @State private var updatedPlayerDetails: String = ""
     @State private var updatedCustomInstructions: String = ""
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var focusedField: Field?  // Enum for multiple fields
+    
+    enum Field: Hashable {
+        case playerDetails
+        case customInstructions
+    }
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Edit Players & Details")
-                .font(.headline)
-            
-            // Player list with remove
-            if let session = viewModel.session {
-                VStack {
-                    List {
-                        // Players list
-                        Section {
-                            ForEach(session.players.indices, id: \.self) { index in
-                                HStack {
-                                    Text(session.players[index])
-                                        .font(.system(.body, design: .rounded))
-                                        .padding(.horizontal, 25)
-                                    Spacer()
-                                    Button(action: {
-                                        viewModel.removePlayer(at: index)
-                                    }) {
-                                        Image(systemName: "trash")
-                                            .foregroundColor(.red)
-                                    }
-                                    .padding(.horizontal, 25)
-                                    .padding(.vertical, 8)
-                                }
-                                .listRowSeparator(.hidden)
-                            }
-                            .onDelete { indices in
-                                indices.forEach { viewModel.removePlayer(at: $0) }
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                            }
-                            .listRowBackground(
-                                Capsule()
-                                    .fill(Constants.primaryColor.opacity(0.4))
-                                    .padding(.vertical, 2).padding(.horizontal, 20)
-                            )
-                        } header: {
-                            Text("  Players")
-                                .font(.caption)
-                                .foregroundStyle(Constants.textSecondary)
-                        }
-                        
-                        // Add new player
-                        Section {
-                            HStack {
-                                ZStack(alignment: .trailing) {
-                                    TextField("Add Player", text: $newPlayerName)
-                                        .font(.system(.body, design: .rounded))
-                                        .textFieldStyle(.plain)
-                                        .padding(.leading)
-                                        .padding(.vertical, 8)
-                                        .cornerRadius(Constants.cornerRadius)
-                                        .shadow(color: Constants.shadowColor.opacity(0.7), radius: 2)
-                                        .frame(maxWidth: .infinity)
-                                        .onSubmit {
-                                            addPlayer(newPlayerName)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 45) {
+                    Text("Edit Players & Details")
+                        .font(Constants.titleFont)
+                        .foregroundColor(Constants.textPrimary)
+                    
+                    // Player list with remove
+                    if let session = viewModel.session {
+                        VStack {
+                            Text("Players")
+                                .font(Constants.subheadlineFont)
+                                .foregroundColor(Constants.textSecondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, 5)
+                            
+                            VStack {
+                                LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 100, maximum: 400), spacing: Constants.smallSpacing, alignment: .center), count: 2), alignment: .center, spacing: Constants.smallSpacing) {
+                                    ForEach(session.players.indices, id: \.self) { index in
+                                        PlayerBubble(name: session.players[index]) {
+                                            viewModel.removePlayer(at: index)
+                                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         }
-                                    
-                                    Button(action: {
-                                        addPlayer(newPlayerName)
-                                    }) {
-                                        Image(systemName: "plus")
-                                            .font(.system(size: 16, weight: .semibold))
-                                            .foregroundColor(Constants.primaryColor)
-                                            .padding(.horizontal, 8)
+                                        .transition(.scale.combined(with: .opacity))
+                                        .animation(.spring(response: Constants.animationDuration, dampingFraction: 0.8), value: session.players)
                                     }
-                                    .padding(.trailing)
-                                    .disabled(newPlayerName.trimmingCharacters(in: .whitespaces).isEmpty)
                                 }
+                                .padding(.bottom)
+                                .padding(.top)
+                                
+                                // Add new player
+                                HStack {
+                                    ZStack(alignment: .trailing) {
+                                        TextField("Add Player", text: $newPlayerName)
+                                            .font(Constants.bodyFont)
+                                            .textFieldStyle(.plain)
+                                            .padding(.leading, Constants.mediumSpacing)
+                                            .padding(.vertical, Constants.smallSpacing)
+                                            .background(Constants.cardBackground)
+                                            .cornerRadius(Constants.cornerRadius)
+                                            .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius / 2)
+                                            .frame(maxWidth: .infinity)
+                                            .onSubmit {
+                                                addPlayer(newPlayerName)
+                                            }
+                                            .foregroundColor(Constants.textPrimary)
+                                        
+                                        Button(action: {
+                                            addPlayer(newPlayerName)
+                                        }) {
+                                            Image(systemName: "plus")
+                                                .font(.system(size: 16, weight: .semibold))
+                                                .foregroundColor(Constants.primaryColor)
+                                                .padding(.horizontal, Constants.smallSpacing)
+                                        }
+                                        .padding(.trailing, Constants.smallSpacing)
+                                        .disabled(newPlayerName.trimmingCharacters(in: .whitespaces).isEmpty)
+                                    }
+                                }
+                                .background(
+                                    Capsule()
+                                        .fill(Color.clear)
+                                        .padding(.vertical, Constants.smallSpacing / 2)
+                                        .padding(.horizontal, Constants.mediumSpacing)
+                                )
                             }
-                            .listRowBackground(
-                                Capsule()
-                                    .fill(Color.white.opacity(0.9))
-                                    .padding(.vertical, 2)
-                                    .padding(.horizontal, 20)
-                            )
+                            .background(Constants.secondaryBackground)
+                            .cornerRadius(Constants.cornerRadius)
+                            .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
+                        }
+                        .padding(.horizontal, Constants.mediumSpacing * 2)
+                        
+                        VStack(alignment: .leading, spacing: Constants.smallSpacing) {
+                            Text("Edit Custom Player/Group Details")
+                                .font(Constants.subheadlineFont)
+                                .foregroundColor(Constants.textSecondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            TextField("Player Fun Facts (e.g., Bob just got dumped, Alice is afraid of birds", text: $updatedPlayerDetails, axis: .vertical)
+                                .font(Constants.bodyFont)
+                                .lineLimit(2...)
+                                .textFieldStyle(.plain)
+                                .padding(Constants.mediumSpacing)
+                                .background(Constants.cardBackground)
+                                .cornerRadius(Constants.cornerRadius)
+                                .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius / 2)
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(Constants.textPrimary)
+                                .focused($focusedField, equals: .playerDetails)
+                                .id("playerDetails")
+                                .onAppear {
+                                    updatedPlayerDetails = viewModel.settings?.playerDetails ?? ""
+                                }
+                        }
+                        .padding(.horizontal, Constants.mediumSpacing * 2)
+                        
+                        VStack(alignment: .leading, spacing: Constants.smallSpacing) {
+                            Text("Edit Custom Game Prompts")
+                                .font(Constants.subheadlineFont)
+                                .foregroundColor(Constants.textSecondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            TextField("Custom prompt for game generation \n(e.g., Lots of trivia!)", text: $updatedCustomInstructions, axis: .vertical)
+                                .font(Constants.bodyFont)
+                                .lineLimit(2...)
+                                .textFieldStyle(.plain)
+                                .padding(Constants.mediumSpacing)
+                                .background(Constants.cardBackground)
+                                .cornerRadius(Constants.cornerRadius)
+                                .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius / 2)
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(Constants.textPrimary)
+                                .focused($focusedField, equals: .customInstructions)
+                                .id("customInstructions")
+                                .onAppear {
+                                    updatedCustomInstructions = viewModel.settings?.customInstructions ?? ""
+                                }
+                        }
+                        .padding(.horizontal, Constants.mediumSpacing * 2)
+                        
+                        Spacer()
+                    }
+                    
+                    Spacer()
+                    
+
+                }
+                .onChange(of: focusedField) { oldValue, newValue in
+                    if let newValue {
+                        withAnimation {
+                            proxy.scrollTo(newValue == .playerDetails ? "playerDetails" : "customInstructions", anchor: .top)
                         }
                     }
-                    .listSectionSpacing(.compact)
-                    .listRowSpacing(5)
-                    .scrollContentBackground(.hidden)
-                    .listRowInsets(.init(top: 0, leading: 40, bottom: 0, trailing: 40))
-                    .frame(maxHeight: calculateListHeight(playerCount: session.players.count))
                 }
-                
-                Divider()
-                
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(" EDIT CUSTOM PLAYER/GROUP DETAILS")
-                        .font(.caption)
-                        .foregroundStyle(Constants.textSecondary)
-                    
-                    // Edit player details
-                    TextField("Player Fun Facts (e.g., Bob just got dumped, Alice is afraid of birds", text: $updatedPlayerDetails, axis: .vertical)
-                        .font(.system(.body, design: .rounded))
-                        .lineLimit(2...)
-                        .textFieldStyle(.plain)
-                        .padding()
-                        .background(Color.white.opacity(0.9))
-                        .cornerRadius(Constants.cornerRadius)
-                        .shadow(color: Constants.shadowColor.opacity(0.4), radius: 2)
-                        .frame(maxWidth: .infinity)
-                    
-                        .onAppear {
-                            updatedPlayerDetails = viewModel.settings?.playerDetails ?? ""
-                        }
-                }
-                .padding(.horizontal, 40)
-                
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(" EDIT CUSTOM GAME PROMPTS")
-                        .font(.caption)
-                        .foregroundStyle(Constants.textSecondary)
-                    
-                    // Edit player details
-                    TextField("Custom prompt for game generation \n(e.g., Lots of trivia!)", text: $updatedCustomInstructions, axis: .vertical)
-                        .font(.system(.body, design: .rounded))
-                        .lineLimit(2...)
-                        .textFieldStyle(.plain)
-                        .padding()
-                        .background(Color.white.opacity(0.9))
-                        .cornerRadius(Constants.cornerRadius)
-                        .shadow(color: Constants.shadowColor.opacity(0.4), radius: 2)
-                        .frame(maxWidth: .infinity)
-                    
-                        .onAppear {
-                            updatedCustomInstructions = viewModel.settings?.customInstructions ?? ""
-                        }
-                }
-                .padding(.top, 10)
-                .padding(.horizontal, 40)
-                
-                Spacer()
             }
+            .scrollDismissesKeyboard(.interactively)
             
-            Spacer()
-            
-            HStack {
+            HStack(spacing: Constants.mediumSpacing) {
                 Button("Cancel") { dismiss() }
-                    .foregroundColor(.gray)
+                    .foregroundColor(Constants.textSecondary)
+                    .font(Constants.bodyFont)
                 
                 Spacer()
                 
@@ -238,13 +255,20 @@ struct EditPlayersMenu: View {
                     viewModel.updateCustomInstructions(updatedCustomInstructions)
                     dismiss()
                 }
+                .foregroundColor(Constants.textPrimary)
+                .font(Constants.bodyFont)
             }
-            .padding()
+            .padding(Constants.mediumSpacing)
         }
-        .padding()
-        .cornerRadius(16)
-        .shadow(radius: 10)
-        .ignoresSafeArea()
+        .onTapGesture {
+            focusedField = nil
+        }
+        .padding(Constants.mediumSpacing)
+        .padding(.bottom, 0)
+        .background(Constants.background)
+        .cornerRadius(Constants.cornerRadius)
+        .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius * 2)
+        .ignoresSafeArea(.keyboard)
     }
     
     func addPlayer(_ name: String) {
@@ -268,7 +292,6 @@ struct EditPlayersMenu: View {
         return min(max(calculated, minHeight), maxHeight)
     }
 }
-
 #Preview {
     let viewModel = GameViewModel(forPreview: true)
     GameView(viewModel: viewModel)

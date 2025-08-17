@@ -15,7 +15,7 @@ struct GameSetupView: View {
     @State private var explicitness: Double = 3.0
     @State private var playerDetails: String = ""
     @State private var customInstructions: String = ""
-    @State private var theme: String = "General"
+    @State private var theme: String = "Party"
     
     @State private var isSaving = false
     @State private var showGameView = false
@@ -34,99 +34,100 @@ struct GameSetupView: View {
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-                .blur(radius: 4)
-                .opacity(0.3)
+                .blur(radius: Constants.shadowRadius)
+                .opacity(Constants.backgroundOpacity)
             
-            VStack(spacing: 32) {
+            VStack(spacing: Constants.largeSpacing) {
                 Text("Customize Your Game")
-                    .font(.title)
+                    .font(Constants.titleFont)
                     .foregroundColor(Constants.textPrimary)
                     .padding(.top, 60)
                 
-                Spacer()
-                
-                VStack {
-                    Text("Choose Your Spice Level:")
-                        .font(.system(.body, design: .rounded))
+                VStack(spacing: Constants.smallSpacing) {
+                    Text("Choose Your Spice Level")
+                        .font(Constants.bodyFont)
+                        .foregroundColor(Constants.textPrimary)
                     
                     Slider(value: $explicitness, in: 1...5, step: 1) {
                         Text("Explicitness: \(Int(explicitness)) (1: Clean - 5: Wild)")
                             .foregroundColor(Constants.textSecondary)
                     }
-                    .tint(Constants.primaryColor)  // Matched tint
-                    .padding(.horizontal, 40)
+                    .tint(Constants.primaryColor)
+                    .padding(.horizontal, Constants.mediumSpacing * 2)
                     
                     HStack {
-                        Text("Spice Level: \(Int(explicitness))")
-                            .font(.system(.caption, design: .rounded))
+                        Text("Tame")
+                            .font(Constants.subheadlineFont)
+                            .foregroundColor(Constants.textSecondary)
                         
                         Spacer()
                         
-                        Text("1: Tame - 5: Spicy)")
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(Constants.textSecondary)
+                        Text("Spicy")
+                            .font(Constants.subheadlineFont)
+                            .foregroundColor(Constants.textSecondary)
                     }
-                    .padding()
-                    .padding(.horizontal, 40)
+                    .padding(.horizontal, Constants.mediumSpacing * 2)
                 }
+                .padding()
+                .background(Constants.secondaryBackground)
+                .cornerRadius(Constants.cornerRadius)
+                .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
+                .padding(.horizontal, Constants.mediumSpacing)
                 
-                Spacer()
-                
-                VStack {
-                    Text("Stir the Pot:")
-                        .font(.system(.body, design: .rounded))
+                VStack(spacing: Constants.smallSpacing) {
+                    Text("Stir the Pot")
+                        .font(Constants.bodyFont)
+                        .foregroundColor(Constants.textPrimary)
                     
-                    TextField("Player Fun Facts (e.g., Bob just got dumped, Alice is afraid of birds", text: $playerDetails, axis: .vertical)
+                    TextField("Player Fun Facts (e.g., Bob just got dumped, Alice is afraid of birds)", text: $playerDetails, axis: .vertical)
                         .multilineTextAlignment(.leading)
                         .focused($isTextFieldFocused)
-                        .font(.system(.body, design: .rounded))
+                        .font(Constants.bodyFont)
                         .lineLimit(2...)
                         .textFieldStyle(.plain)
-                        .padding(12)
-                        .background(Color.white.opacity(0.9))
+                        .padding(Constants.mediumSpacing)
+                        .background(Constants.cardBackground)
                         .cornerRadius(Constants.cornerRadius)
-                        .shadow(color: Constants.shadowColor, radius: 4)
+                        .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
                         .frame(maxWidth: .infinity)
-                        .padding(.horizontal, 40)
-                        .shadow(color: Constants.shadowColor, radius: 4)
+                        .padding(.horizontal, Constants.mediumSpacing * 2)
+                        .foregroundColor(Constants.textPrimary)
                 }
                 
-                VStack {
-                    Text("Custom Game Instructions:")
-                        .font(.system(.body, design: .rounded))
+                VStack(spacing: Constants.smallSpacing) {
+                    Text("Custom Game Instructions")
+                        .font(Constants.bodyFont)
+                        .foregroundColor(Constants.textPrimary)
                     
-                    TextField("Custom prompt for game generation \n(e.g., Lots of trivia!)", text: $customInstructions, axis: .vertical)
+                    TextField("Custom prompt for game generation \n(e.g., Lots of trivia)", text: $customInstructions, axis: .vertical)
                         .multilineTextAlignment(.leading)
                         .focused($isTextFieldFocused)
-                        .font(.system(.body, design: .rounded))
+                        .font(Constants.bodyFont)
                         .lineLimit(2...)
                         .textFieldStyle(.plain)
-                        .padding(12)
-                        .background(Color.white.opacity(0.9))
+                        .padding(Constants.mediumSpacing)
+                        .background(Constants.cardBackground)
                         .cornerRadius(Constants.cornerRadius)
-                        .shadow(color: Constants.shadowColor, radius: 4)
+                        .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
                         .frame(maxWidth: .infinity)
-                        .padding(.horizontal, 40)
-                        .shadow(color: Constants.shadowColor, radius: 4)
+                        .padding(.horizontal, Constants.mediumSpacing * 2)
+                        .foregroundColor(Constants.textPrimary)
                 }
                 
-                Spacer()
                 
-                VStack {
-                    Text("Choose a Theme:")
-                        .font(.system(.body, design: .rounded))
+                VStack(spacing: Constants.smallSpacing) {
+                    Text("Choose a Theme")
+                        .font(Constants.bodyFont)
+                        .foregroundColor(Constants.textPrimary)
                     
                     Picker("Theme", selection: $theme) {
                         ForEach(themes, id: \.self) { Text($0) }
                     }
                     .pickerStyle(.segmented)
-                    //                .background(Color.gray.opacity(0))
                     .cornerRadius(Constants.cornerRadius)
-                    .shadow(color: Constants.shadowColor, radius: 4)
-                    .padding(.horizontal, 40)
+                    .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
+                    .padding(.horizontal, Constants.mediumSpacing * 2)
                 }
-                
-                Spacer()
                 
                 Button("Start Game") {
                     Task {
@@ -138,22 +139,27 @@ struct GameSetupView: View {
                     }
                 }
                 .font(.headline)
-                .padding()
-                .background(Constants.accentColor.opacity(0.9))
-                .foregroundColor(.white)
+                .padding(Constants.mediumSpacing)
+                .background(Constants.accentColor.opacity(Constants.buttonOpacity))
+                .foregroundColor(Constants.textPrimary)
                 .cornerRadius(Constants.cornerRadius)
-                .shadow(color: Constants.shadowColor, radius: 4)
+                .shadow(color: Constants.shadowColor, radius: Constants.shadowRadius)
                 .disabled(isSaving)
-                .frame(maxWidth: .infinity, alignment: .center)  // Centered like HomeView
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, Constants.mediumSpacing * 2)
                 
                 if isSaving {
                     ProgressView()
                         .tint(Constants.primaryColor)
+                        .scaleEffect(1.2)
                 }
             }
-            .padding()
-            .padding(.horizontal, 40)
+            .padding(.vertical, Constants.largeSpacing)
+            .padding(.bottom, Constants.horizontalLargeSpacing)
+            .padding(.horizontal, Constants.horizontalLargeSpacing)
+            .ignoresSafeArea(.keyboard)
         }
+        .background(Constants.background)
         .navigationDestination(isPresented: $showGameView) {
             GameView(gameID: gameID)
         }

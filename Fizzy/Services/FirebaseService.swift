@@ -66,6 +66,17 @@ class FirebaseService: ObservableObject {
     }
     
     @MainActor
+    func signOut() {
+        do {
+            GIDSignIn.sharedInstance.signOut()
+            try Auth.auth().signOut()
+            user = nil
+        } catch {
+            self.error = error
+        }
+    }
+    
+    @MainActor
     func createGameSession(players: [String]) async -> String? {
         let session = GameSession(
             id: "",

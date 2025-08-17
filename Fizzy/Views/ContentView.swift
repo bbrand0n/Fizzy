@@ -30,6 +30,10 @@ struct ContentView: View {
             if Auth.auth().currentUser != nil && firebaseService.user == nil {
                 firebaseService.user = Auth.auth().currentUser
             }
+            isLoggedIn = firebaseService.user != nil
+        }
+        .onChange(of: firebaseService.user) {
+            isLoggedIn = firebaseService.user != nil
         }
     }
 }

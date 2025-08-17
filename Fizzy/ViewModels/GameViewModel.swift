@@ -87,6 +87,7 @@ class GameViewModel: ObservableObject {
         if resetAvailableLikedExamples {
             availableLikedExamples = likedExamples.shuffled()
             resetAvailableLikedExamples = false
+            Task { await generateNewPrompt() }
         }
     }
     
@@ -145,9 +146,11 @@ class GameViewModel: ObservableObject {
         // Failed, just randomly choose from list
         if newPrompt.isEmpty || session.prompts.contains(newPrompt) {
             newPrompt = likedExamples.randomElement() ?? "I'm sorry, I couldn't generate a new prompt."
-            if newPrompt.contains("*name") {
-                newPrompt = newPrompt.replacingOccurrences(of: "*name", with: session.players.randomElement() ?? "A random player")
-            }
+        }
+        
+        // Replace name
+        if newPrompt.contains("*name") {
+            newPrompt = newPrompt.replacingOccurrences(of: "*name", with: session.players.randomElement() ?? "A random player")
         }
         
         // Append AI response to history
