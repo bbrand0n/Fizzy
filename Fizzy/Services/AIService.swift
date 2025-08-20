@@ -28,8 +28,9 @@ class AIService {
             "model": "grok-3-mini",
             "messages": history,
             "max_tokens": 1024,
-            "temperature": 0.5,
-            "reasoning_effort": "low"
+            "temperature": 0.8,
+            "reasoning_effort": "low",
+            "top_p": 0.95
         ]
         
         do {

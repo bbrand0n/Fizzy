@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 class HomeViewModel: ObservableObject {
-    @Published var playerNames: [String] = ["Player 1"]
+    @Published var playerNames: [String] = []
     @Published var gameSessionID: String?
     @Published var isStartingGame = false
     

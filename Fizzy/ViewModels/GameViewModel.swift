@@ -69,12 +69,28 @@ class GameViewModel: ObservableObject {
         let playerList = players.joined(separator: ", ")
         
         likedExamples.shuffle()
+        let exampleTypes = categorizedExamples.keys.shuffled()
+        
+        // Select one random example per type, up to 10 total
+        let selectedExamples = exampleTypes.compactMap { type in
+            categorizedExamples[type]?.shuffled().prefix(2)
+        }.prefix(10)
         
         fixedInitialMessages = [
-            ["role": "system", "content": "You are a party game AI mimicking these example styles. Always generate similar unique, fun prompts with penalties. Base on these fixed settings: Explicitness level \(settings.explicitness)/5 (1: clean and wholesome; 5: wild and edgy). Theme: \(settings.theme). Players: \(playerList). \(!settings.playerDetails.isEmpty ? "Player details for context: \(settings.playerDetails)." : "") \(!settings.customInstructions.isEmpty ? "Custom instructions for the game: \(settings.customInstructions)." : "") Keep prompts engaging, conversation-provoking, and interesting. Don't be afraid to use profanity or vulgarity if it adds humor or excitement to the prompt. Use the following examples as inspiration to generate new ones or select and adapt from them. Keep the prompts short and straight forward, under 30 words."],
+            ["role": "system", "content": """
+    You are a witty party game AI that generates fun, unique prompts in the style of the examples provided. Use this CO-STAR structure for every response:
+    
+    - Context: Base prompts on these settings—Explicitness: \(settings.explicitness)/5 (1=wholesome, 5=edgy/vulgar). Theme: \(settings.theme). Players: \(playerList). \(settings.playerDetails.isEmpty ? "" : "Incorporate player details: \(settings.playerDetails).") \(settings.customInstructions.isEmpty ? "" : "Follow custom instructions: \(settings.customInstructions).")
+    - Objective: Create engaging, conversation-provoking prompts that involve drinking penalties, challenges, or revelations. Make them short (under 30 words), humorous, and non-repetitive.
+    - Style: Mimic the playful, bold, interactive style of the examples (e.g., challenges, voting, dares). Use placeholders like *name, *name2 for distinct players if targeting individuals.
+    - Tone: Light-hearted and exciting, with profanity/vulgarity only if explicitness >=4.
+    - Audience: Party players looking for laughs and bonding.
+    - Response: Output only the prompt text, nothing else.
+    
+    Draw inspiration from these examples without copying them directly:
+    """ + likedExamples.prefix(10).map { "- \($0)" }.joined(separator: "\n")],
         ]
         
-        let exampleTypes = ["challenge", "voting game", "story", "targeting", "trivia", "role-play", "debate", "hypothetical", "mimicry"]
         var exampleIndex = 0
         for example in likedExamples.prefix(10) {
             let randomType = exampleTypes.randomElement() ?? "challenge"
@@ -129,7 +145,25 @@ class GameViewModel: ObservableObject {
                 tempHistory += truncatedDynamic
                 
                 let randomType = PromptType.random().rawValue
-                let userRequest = "Follow the example styles above. Generate a new \(randomType) style prompt for \(session.players.count) players. Target \(targetPlayerName). Avoid repeats from past prompts: \(session.prompts.joined(separator: "; ")). Tie into the initialized settings and examples. Keep the prompts short and straight forward, under 30 words. \(playerDetails)"
+                if let typeExamples = categorizedExamples[randomType], !typeExamples.isEmpty {
+                    let extraExamples = typeExamples.shuffled().prefix(3)
+                    for example in extraExamples {
+                        tempHistory.append(["role": "assistant", "content": example])
+                    }
+                }
+                
+                let userRequest = """
+                    Act as a mischievous party host generating a new \(randomType)-style prompt. Follow the CO-STAR framework above strictly.
+
+                    Target: \(targetPlayerName).
+                    \(playerDetails)
+
+                    Ensure it's unique—avoid any similarity to past prompts: \(session.prompts.joined(separator: "; ")).
+                    Brainstorm internally: Think of 3 wild ideas based on examples, then pick the most original one under 30 words.
+
+                    Output only the final prompt.
+                    """
+                
                 tempHistory.append(["role": "user", "content": userRequest])
                 
                 newPrompt = await aiService.generatePrompt(history: tempHistory)
@@ -150,7 +184,7 @@ class GameViewModel: ObservableObject {
         
         // Replace name
         if newPrompt.contains("*name") {
-            newPrompt = newPrompt.replacingOccurrences(of: "*name", with: session.players.randomElement() ?? "A random player")
+            newPrompt = replacePlaceholders(in: newPrompt)
         }
         
         // Append AI response to history
@@ -240,6 +274,39 @@ class GameViewModel: ObservableObject {
             initializeConversationHistory(with: self.settings ?? updatedSettings,
                                           players: self.session?.players ?? ["Player 1", "Player 2", "Player 3", "Player 4"])
         }
+    }
+
+    private func replacePlaceholders(in prompt: String) -> String {
+        var players = self.session?.players ?? ["Player 1", "Player 2", "Player 3"]
+        
+        let placeholderRegex = try! Regex("\\*name\\d*")
+        let matches = prompt.matches(of: placeholderRegex)
+        let uniquePlaceholders = Set(matches.map { String(prompt[$0.range]) })
+        
+        if uniquePlaceholders.isEmpty { return prompt }
+        
+        let shuffledPlayers = players.shuffled()
+        var playerAssignment: [String: String] = [:]
+        var playerIndex = 0
+        
+        // Sort placeholders by their numeric suffix (*name first, then *name2, etc.)
+        let sortedPlaceholders = uniquePlaceholders.sorted { a, b in
+            let numA = Int(a.dropFirst(5)) ?? 1  // "*name" -> 1, "*name2" -> 2
+            let numB = Int(b.dropFirst(5)) ?? 1
+            return numA < numB
+        }
+        
+        for placeholder in sortedPlaceholders {
+            playerAssignment[placeholder] = shuffledPlayers[playerIndex % shuffledPlayers.count]
+            playerIndex += 1
+        }
+        
+        var modifiedPrompt = prompt
+        for (placeholder, player) in playerAssignment {
+            modifiedPrompt = modifiedPrompt.replacingOccurrences(of: placeholder, with: player)
+        }
+        
+        return modifiedPrompt
     }
     
     deinit {
